@@ -1,3 +1,6 @@
+# Git Tutorial
+我覺得這份寫的蠻清楚的: [Git Tutorial](https://github.com/twtrubiks/Git-Tutorials)
+
 # 中山網路書店
 [![GitHub release](https://img.shields.io/github/release/Text-Analytics-and-Retrieval/db_class2023)](https://github.com/Text-Analytics-and-Retrieval/db_class2023/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/Text-Analytics-and-Retrieval/db_class2023)](https://github.com/Text-Analytics-and-Retrieval/db_class2023/main/LICENSE)
