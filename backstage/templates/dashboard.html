@@ -44,7 +44,7 @@
   var count = {{dataa|tojson}};
   var optiona = {
     title: {
-      text: '各月銷售總額分析'
+      text: '各月訂單數量分析'
     },
     tooltip: {},
     legend: {
@@ -57,31 +57,13 @@
     series: [{
       name: '銷售總額',
       type: 'bar',
+      // symbol: 'circle',
       symbolSize: 16,
       data: data,
       markPoint: {
         data: [
           {type: 'max', name: '銷量最高月份'},
           {type: 'min', name: '銷量最低月份'}
-        ]
-      },
-      label: {
-        show: true,
-        position: 'top',
-        textStyle: {
-          fontSize: 15
-        }
-      }
-    },
-    {
-      name: '訂單總數',
-      type: 'bar',
-      symbolSize: 16,
-      data: count,
-      markPoint: {
-        data: [
-          {type: 'max', name: '訂單數最高月份'},
-          {type: 'min', name: '訂單數最低月份'}
         ]
       },
       label: {

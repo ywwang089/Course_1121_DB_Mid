@@ -7,12 +7,13 @@ from numpy import identity, product
 from sqlalchemy import null
 from api.api import *
 from api.sql import *
-from bookstore.views.views import *
+from bookstore.views.store import *
 from backstage.views.analysis import *
 from backstage.views.manager import *
 from link import *
 from werkzeug.utils import secure_filename
 
+## Flask-Login : 確保未登入者不能使用系統
 app = Flask(__name__)
 app.secret_key = 'Your Key' 
 

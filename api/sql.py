@@ -1,18 +1,22 @@
-import sqlite3
-from link import *
 from typing import Optional
+from link import *
 
 class DB():
     def connect():
         cursor = connection.cursor()
         return cursor
 
+    def prepare(sql):
+        cursor = DB.connect()
+        cursor.prepare(sql)
+        return cursor
+
     def execute(cursor, sql):
         cursor.execute(sql)
         return cursor
 
-    def execute_input(cursor, sql, input):
-        cursor.execute(sql, input)
+    def execute_input(cursor, input):
+        cursor.execute(None, input)
         return cursor
 
     def fetchall(cursor):
@@ -26,48 +30,48 @@ class DB():
 
 class Member():
     def get_member(account):
-        sql = "SELECT ACCOUNT, PASSWORD, MID, IDENTITY, NAME FROM MEMBER WHERE ACCOUNT = ?"
-        return DB.fetchall(DB.execute_input(DB.connect(), sql, [account]))
+        sql = "SELECT ACCOUNT, PASSWORD, MID, IDENTITY, NAME FROM MEMBER WHERE ACCOUNT = :id"
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {'id' : account}))
     
     def get_all_account():
         sql = "SELECT ACCOUNT FROM MEMBER"
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
     def create_member(input):
-        sql = "INSERT INTO MEMBER VALUES (null, :name, :account, :password, :identity)"
-        DB.execute_input(DB.connect(), sql, input)
+        sql = 'INSERT INTO MEMBER VALUES (null, :name, :account, :password, :identity)'
+        DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
-    def delete_product(input):
-        sql = 'DELETE FROM SHOPPING_DETAIL WHERE SID = ? and PID = ?'
-        DB.execute_input(DB.connect(), sql, input)
+    def delete_product(tno, pid):
+        sql = 'DELETE FROM RECORD WHERE TNO=:tno and PID=:pid '
+        DB.execute_input(DB.prepare(sql), {'tno': tno, 'pid':pid})
         DB.commit()
         
     def get_order(userid):
-        sql = 'SELECT * FROM ORDER_LIST WHERE MID = ? ORDER BY ORDERTIME DESC'
-        return DB.fetchall(DB.execute_input(DB.connect(), sql, [userid]))
+        sql = 'SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY ORDERTIME DESC'
+        return DB.fetchall(DB.execute_input( DB.prepare(sql), {'id':userid}))
     
     def get_role(userid):
-        sql = 'SELECT IDENTITY, NAME FROM MEMBER WHERE MID = ?'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, [userid]))
+        sql = 'SELECT IDENTITY, NAME FROM MEMBER WHERE MID = :id '
+        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':userid}))
 
 class Cart():
     def check(user_id):
-        sql = 'SELECT * FROM CART, SHOPPING_DETAIL WHERE CART.MID = :id AND CART.SID = SHOPPING_DETAIL.SID'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, [user_id]))
+        sql = 'SELECT * FROM CART, RECORD WHERE CART.MID = :id AND CART.TNO = RECORD.TNO'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': user_id}))
         
     def get_cart(user_id):
-        sql = 'SELECT * FROM CART WHERE MID = ?'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, [user_id]))
+        sql = 'SELECT * FROM CART WHERE MID = :id'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': user_id}))
 
-    def add_cart(input):
-        sql = 'INSERT INTO CART VALUES (:aidd, :time, null)'
-        DB.execute_input(DB.connect(), sql, input)
+    def add_cart(user_id, time):
+        sql = 'INSERT INTO CART VALUES (:id, :time, cart_tno_seq.nextval)'
+        DB.execute_input( DB.prepare(sql), {'id': user_id, 'time':time})
         DB.commit()
 
     def clear_cart(user_id):
-        sql = 'DELETE FROM CART WHERE MID = ?'
-        DB.execute_input( DB.connect(), sql, [user_id])
+        sql = 'DELETE FROM CART WHERE MID = :id '
+        DB.execute_input( DB.prepare(sql), {'id': user_id})
         DB.commit()
        
 class Product():
@@ -76,110 +80,104 @@ class Product():
         return DB.fetchone(DB.execute( DB.connect(), sql))
     
     def get_product(pid):
-        sql ='SELECT * FROM PRODUCT WHERE PID = ?'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, [pid]))
+        sql ='SELECT * FROM PRODUCT WHERE PID = :id'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid}))
 
     def get_all_product():
         sql = 'SELECT * FROM PRODUCT'
-        return DB.fetchall(DB.execute(DB.connect(), sql))
-    
-    def search(keyword):
-        sql = 'SELECT * FROM PRODUCT WHERE PNAME LIKE :search'
-        return DB.fetchall(DB.execute_input(DB.connect(), sql, ['%' + keyword + '%']))
+        return DB.fetchall(DB.execute( DB.connect(), sql))
     
     def get_name(pid):
-        sql = 'SELECT PNAME FROM PRODUCT WHERE PID = ?'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, [pid]))[0]
+        sql = 'SELECT PNAME FROM PRODUCT WHERE PID = :id'
+        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':pid}))[0]
 
     def add_product(input):
-        sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description, :filename)'
-        DB.execute_input(DB.connect(), sql, input)
+        sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description)'
+
+        DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
     def delete_product(pid):
         sql = 'DELETE FROM PRODUCT WHERE PID = :id '
-        DB.execute_input(DB.connect(), sql, [pid])
+        DB.execute_input(DB.prepare(sql), {'id': pid})
         DB.commit()
 
     def update_product(input):
-        sql = 'UPDATE PRODUCT SET PNAME = ?, PRICE = ?, CATEGORY = ?, PDESC = :description WHERE PID = ?'
-        DB.execute_input(DB.connect(), sql, input)
-        DB.commit()
-        
-    def update_image(input):
-        sql = 'UPDATE PRODUCT SET PIC=:filename WHERE PID=:pid'
-        DB.execute_input(DB.connect(), sql, input)
+        sql = 'UPDATE PRODUCT SET PNAME=:name, PRICE=:price, CATEGORY=:category, PDESC=:description WHERE PID=:pid'
+        DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
-class Shopping_Detail():
+class Record():
     def get_total_money(tno):
-        sql = 'SELECT SUM(TOTAL) FROM SHOPPING_DETAIL WHERE SID = ?'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, [tno]))[0]
+        sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO=:tno'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'tno': tno}))[0]
 
-    def check_product(input):
-        sql = 'SELECT * FROM SHOPPING_DETAIL WHERE PID = ? and SID = ?'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, input))
+    def check_product(pid, tno):
+        sql = 'SELECT * FROM RECORD WHERE PID = :id and TNO = :tno'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid, 'tno':tno}))
 
     def get_price(pid):
         sql = 'SELECT PRICE FROM PRODUCT WHERE PID = :id'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, [pid]))[0]
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid}))[0]
 
     def add_product(input):
-        sql = 'INSERT INTO SHOPPING_DETAIL VALUES (:id, :tno, 1, :price, :total)'
-        DB.execute_input(DB.connect(), sql, input)
+        sql = 'INSERT INTO RECORD VALUES (:id, :tno, 1, :price, :total)'
+        DB.execute_input( DB.prepare(sql), input)
         DB.commit()
 
-    def get_shopping_detail(tno):
-        sql = 'SELECT * FROM SHOPPING_DETAIL WHERE SID = ?'
-        return DB.fetchall(DB.execute_input(DB.connect(), sql, [tno]))
+    def get_record(tno):
+        sql = 'SELECT * FROM RECORD WHERE TNO = :id'
+        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'id': tno}))
 
-    def get_amount(input):
-        sql = 'SELECT AMOUNT FROM SHOPPING_DETAIL WHERE SID = ? and PID=:pid'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, input))[0]
+    def get_amount(tno, pid):
+        sql = 'SELECT AMOUNT FROM RECORD WHERE TNO = :id and PID=:pid'
+        return DB.fetchone( DB.execute_input( DB.prepare(sql) , {'id': tno, 'pid':pid}) )[0]
     
     def update_product(input):
-        sql = 'UPDATE SHOPPING_DETAIL SET AMOUNT=:amount, TOTAL=:total WHERE PID=:pid and SID=:tno'
-        DB.execute_input(DB.connect(), sql, input)
+        sql = 'UPDATE RECORD SET AMOUNT=:amount, TOTAL=:total WHERE PID=:pid and TNO=:tno'
+        DB.execute_input(DB.prepare(sql), input)
 
     def delete_check(pid):
-        sql = 'SELECT * FROM SHOPPING_DETAIL WHERE PID = ?'
-        return DB.fetchone(DB.execute_input(DB.connect(), sql, [pid]))
+        sql = 'SELECT * FROM RECORD WHERE PID=:pid'
+        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'pid':pid}))
 
     def get_total(tno):
-        sql = 'SELECT SUM(TOTAL) FROM SHOPPING_DETAIL WHERE SID = ?'
-        return DB.fetchall(DB.execute_input(DB.connect(), sql, [tno]))[0]
+        sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO = :id'
+        return DB.fetchall(DB.execute_input( DB.prepare(sql), {'id':tno}))[0]
+    
 
 class Order_List():
     def add_order(input):
-        sql = "INSERT INTO ORDER_LIST VALUES (null, :mid, :ordertime, :total, :tno)"
-        DB.execute_input(DB.connect(), sql, input)
+        sql = 'INSERT INTO ORDER_LIST VALUES (null, :mid, TO_DATE(:time, :format ), :total, :tno)'
+        DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
     def get_order():
-        sql = 'SELECT OID, NAME, TOTALPRICE, ORDERTIME FROM ORDER_LIST NATURAL JOIN MEMBER ORDER BY ORDERTIME DESC'
+        sql = 'SELECT OID, NAME, PRICE, ORDERTIME FROM ORDER_LIST NATURAL JOIN MEMBER ORDER BY ORDERTIME DESC'
         return DB.fetchall(DB.execute(DB.connect(), sql))
     
     def get_orderdetail():
-        sql = 'SELECT O.OID, P.PNAME, R.UNITPRICE, R.AMOUNT FROM ORDER_LIST O, SHOPPING_DETAIL S, PRODUCT P WHERE O.SID = S.SID AND S.PID = P.PID'
+        sql = 'SELECT O.OID, P.PNAME, R.SALEPRICE, R.AMOUNT FROM ORDER_LIST O, RECORD R, PRODUCT P WHERE O.TNO = R.TNO AND R.PID = P.PID'
         return DB.fetchall(DB.execute(DB.connect(), sql))
+
 
 class Analysis():
-    def month_price(input):
-        sql = "SELECT strftime('%m', ORDERTIME) AS MON, SUM(TOTALPRICE) FROM ORDER_LIST WHERE MON = ?"
-        return DB.fetchall(DB.execute_input(DB.connect(), sql, [input]))
+    def month_price(i):
+        sql = 'SELECT EXTRACT(MONTH FROM ORDERTIME), SUM(PRICE) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)'
+        return DB.fetchall( DB.execute_input( DB.prepare(sql) , {"mon": i}))
 
-    def month_count(input):
-        sql = "SELECT strftime('%m', ORDERTIME) AS MON, COUNT(OID) FROM ORDER_LIST WHERE MON = ?"
-        return DB.fetchall(DB.execute_input(DB.connect(), sql, [input]))
+    def month_count(i):
+        sql = 'SELECT EXTRACT(MONTH FROM ORDERTIME), COUNT(OID) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)'
+        return DB.fetchall( DB.execute_input( DB.prepare(sql), {"mon": i}))
     
     def category_sale():
-        sql = 'SELECT SUM(TOTAL), CATEGORY FROM(SELECT * FROM PRODUCT, SHOPPING_DETAIL, ORDER_LIST WHERE PRODUCT.PID = SHOPPING_DETAIL.PID AND SHOPPING_DETAIL.SID = ORDER_LIST.SID) GROUP BY CATEGORY'
-        return DB.fetchall(DB.execute(DB.connect(), sql))
+        sql = 'SELECT SUM(TOTAL), CATEGORY FROM(SELECT * FROM PRODUCT,RECORD WHERE PRODUCT.PID = RECORD.PID) GROUP BY CATEGORY'
+        return DB.fetchall( DB.execute( DB.connect(), sql))
 
-    def member_sale(input):
-        sql = "SELECT SUM(TOTALPRICE), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = ? GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY SUM(TOTALPRICE) DESC LIMIT 5"
-        return DB.fetchall(DB.execute_input(DB.connect(), sql, [input]))
+    def member_sale():
+        sql = 'SELECT SUM(PRICE), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY SUM(PRICE) DESC'
+        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))
 
-    def member_sale_count(input):
-        sql = "SELECT COUNT(*), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = ? GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY COUNT(*) DESC LIMIT 5"
-        return DB.fetchall(DB.execute_input(DB.connect(), sql, [input]))
+    def member_sale_count():
+        sql = 'SELECT COUNT(*), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY COUNT(*) DESC'
+        return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))

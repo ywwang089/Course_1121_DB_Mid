@@ -18,8 +18,11 @@ def user_loader(userid):
     user = User()
     user.id = userid
     data = Member.get_role(userid)
-    user.role = data[0]
-    user.name = data[1]
+    try:
+        user.role = data[0]
+        user.name = data[1]
+    except:
+        pass
     return user
 
 @api.route('/login', methods=['POST', 'GET'])
@@ -71,9 +74,9 @@ def register():
         else:
             input = { 
                 'name': request.form['username'], 
-                'account': user_account, 
-                'password': request.form['password'], 
-                'identity': request.form['identity'] 
+                'account':user_account, 
+                'password':request.form['password'], 
+                'identity':request.form['identity'] 
             }
             Member.create_member(input)
             return redirect(url_for('api.login'))

@@ -21,35 +21,24 @@
 {% endwith %}
 
 {% with messages = get_flashed_messages() %}
+{% if messages[0] == 'added successfully' %}
+  
+<script language="javascript">
+
+  alert('新增成功!');
+
+</script>
+
+
+{% endif %}
+{% endwith %}
+
+{% with messages = get_flashed_messages() %}
 {% if messages[0] == 'failed' %}
   
 <script language="javascript">
 
   alert('有使用者有使用到這筆資料，所以不能刪除');
-
-</script>
-
-{% endif %}
-{% endwith %}
-
-{% with messages = get_flashed_messages() %}
-{% if messages[0] == 'existed product name' %}
-  
-<script language="javascript">
-
-  alert('商品名稱與現有商品重複，新增失敗');
-
-</script>
-
-{% endif %}
-{% endwith %}
-
-{% with messages = get_flashed_messages() %}
-{% if messages[0] == 'added successfully' %}
-  
-<script language="javascript">
-
-  alert('新增成功');
 
 </script>
 
@@ -66,21 +55,22 @@
         });
     });
 </script>
-
-<br/>
-<div class="d-flex col-sm-4">
-    <span class="input-group-text" id="basic-addon1">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-      </svg>
-    </span>
-    <input class="form-control me-2" id="keyword" placeholder="搜尋商品" aria-label="Search">
-</div>
-<br/>
 &nbsp;
-<button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-    新增商品
-</button>
+&nbsp;
+<div class="d-flex justify-content-between container-xxl">
+    <div class="d-flex col-sm-4">
+        <span class="input-group-text" id="basic-addon1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+          </svg>
+        </span>
+        <input class="form-control me-2" id="keyword" placeholder="搜尋商品" aria-label="Search">
+    </div>
+    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        新增商品
+    </button>
+</div>
+
 <form method="post" enctype=multipart/form-data action={{ url_for('manager.add') }}>
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -111,10 +101,10 @@
                         <label for="inputProductDesc" class="form-label">商品敘述</label>
                         <textarea class="form-control" id="inputProductDesc" name="description" required></textarea>
                     </div>
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="inputProductImg" class="form-label">商品圖片</label><br/>
                         <input type="file" name="file" id="file-uploader" data-target="file-uploader" required/>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">取消</button>
@@ -137,7 +127,7 @@
             <th width="20%"><center>商品名稱</center></th>
             <th width="15%"><center>商品單價</center></th>
             <th width="15%"><center>商品類別</center></th>
-            <th colspan="3"><center>資料操作</center></th>
+            <th colspan="2"><center>資料操作</center></th>
         </tr>
     </thead>
     <tbody id="product">
@@ -147,13 +137,8 @@
             <td><center>{{ i.商品名稱 }}</center></td>
             <td><center>{{ i.商品售價 }}</center></td>
             <td><center>{{ i.商品類別 }}</center></td>
-            <!-- <td><center>
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.商品編號}}">
-                    商品資訊
-                </button>
-            </center></td> -->
-            <td><center><button type="submit" value="{{i.商品編號}}" name="edit" class="btn btn-outline-success">編輯商品</button></center></td>
-            <td><center><button type="submit" value="{{i.商品編號}}" name="delete" onclick="return (confirm('你確定要刪除 \'{{ i.商品名稱 }}\' 嗎？'))" class="btn btn-outline-danger">刪除商品</button></center></td>
+            <td><center><button type="submit" value="{{i.商品編號}}" name="edit" class="btn btn-success">編輯商品</button></center></td>
+            <td><center><button type="submit" value="{{i.商品編號}}" name="delete" onclick="return (confirm('你確定要刪除 \'{{ i.商品名稱 }}\' 嗎？'))" class="btn btn-danger">刪除商品</button></center></td>
         </tr>
     {% endfor %}
     </tbody>

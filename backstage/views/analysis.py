@@ -11,12 +11,7 @@ def dashboard():
     revenue = []
     dataa = []
     for i in range(1,13):
-        if i < 10:
-            input = "0" + str(i)
-        else:
-            input = str(i)
-        
-        row = Analysis.month_price(input)
+        row = Analysis.month_price(i)
 
         if not row:
             revenue.append(0)
@@ -24,12 +19,7 @@ def dashboard():
             for j in row:
                 revenue.append(j[1])
         
-        if i < 10:
-            input = "0" + str(i)
-        else:
-            input = str(i)
-            
-        row = Analysis.month_count(input)
+        row = Analysis.month_count(i)
         
         if not row:
             dataa.append(0)
@@ -46,7 +36,7 @@ def dashboard():
         }
         datab.append(temp)
     
-    row = Analysis.member_sale('user')
+    row = Analysis.member_sale()
     
     datac = []
     nameList = []
@@ -60,10 +50,10 @@ def dashboard():
     
     counter = counter - 1
     
-    row = Analysis.member_sale_count('user')
+    row = Analysis.member_sale_count()
     countList = []
     
     for i in row:
         countList.append(i[0])
         
-    return render_template('dashboard.html', counter = counter, revenue = revenue, dataa = dataa, datab = datab, datac = datac, nameList = nameList, countList = countList, user = current_user.name)
+    return render_template('dashboard.html', counter = counter, revenue = revenue, dataa = dataa, datab = datab, datac = datac, nameList = nameList, countList = countList)

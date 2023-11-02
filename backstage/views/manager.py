@@ -1,19 +1,19 @@
-from flask import Blueprint, render_template, request, url_for, redirect
+from flask import Blueprint, render_template, request, url_for, redirect, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from link import *
 from api.sql import *
 import imp, random, os, string
 from werkzeug.utils import secure_filename
-from flask import current_app, flash
+from flask import current_app
 
-UPLOAD_FOLDER = os.path.abspath(os.curdir) + '/static/product/'
+UPLOAD_FOLDER = 'static/product'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 manager = Blueprint('manager', __name__, template_folder='../templates')
 
 def config():
     current_app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    config = current_app.config['UPLOAD_FOLDER']
+    config = current_app.config['UPLOAD_FOLDER'] 
     return config
 
 @manager.route('/', methods=['GET', 'POST'])
@@ -31,16 +31,12 @@ def productManager():
         
     if 'delete' in request.values:
         pid = request.values.get('delete')
-        data = Shopping_Detail.delete_check(pid)
+        data = Record.delete_check(pid)
         
         if(data != None):
             flash('failed')
         else:
             data = Product.get_product(pid)
-            image = data[5]
-            if(image != None):
-                os.remove(os.path.join(config(), image))
-                
             Product.delete_product(pid)
     
     elif 'edit' in request.values:
@@ -77,21 +73,7 @@ def add():
         price = request.values.get('price')
         category = request.values.get('category')
         description = request.values.get('description')
-        file = request.files['file']
-        
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(config(), filename))
-        
-        pic = pid + filename[filename.index("."):]
-        os.chdir(config())
-        os.rename(filename, pic)
-
-        # 檢查該商品名稱是否已經存在
-        book_row = Product.get_all_product() # 已有所有商品
-        for i in book_row:
-            if (name == i[1]):  # 逐列檢查商品名稱: name=欲新增商品名, i[1]=單一列存在商品名
-                flash('existed product name') # 傳遞失敗
-                return redirect(url_for('manager.productManager')) # 回到商品頁面
+            
         if (len(name) < 1 or len(price) < 1):
             return redirect(url_for('manager.productManager'))
         
@@ -100,15 +82,14 @@ def add():
              'name' : name,
              'price' : price,
              'category' : category,
-             'description':description,
-             'filename':pic
+             'description':description
             }
         )
-        
+
         flash('added successfully')
         return redirect(url_for('manager.productManager'))
 
-    return redirect(url_for('manager.productManager'))
+    return render_template('productManager.html')
 
 @manager.route('/edit', methods=['GET', 'POST'])
 @login_required
@@ -116,38 +97,18 @@ def edit():
     if request.method == 'GET':
         if(current_user.role == 'user'):
             flash('No permission')
-            return redirect(url_for('index'))
+            return redirect(url_for('bookstore'))
 
     if request.method == 'POST':
-
-        new_file = request.files['file']
-        pid = request.values.get('pid')
-        pname = request.values.get('name')
-        price = request.values.get('price')
-        category = request.values.get('category')
-        description = request.values.get('description')
-        
-        if new_file:
-            data = Product.get_product(pid)
-            image = data[5]
-            if image:
-                os.remove(os.path.join(config(), image))
-            
-            filename = secure_filename(new_file.filename)
-            new_file.save(os.path.join(config(), filename))
-            pic = pid + filename[filename.index("."):]
-            os.chdir(config())
-            os.rename(filename, pic)
-            
-            input = (pname, price, category, description, pid)
-            Product.update_product(input)
-            
-            img = (pic, pid)
-            Product.update_image(img)
-        
-        else:
-            input = (pname, price, category, description, pid)
-            Product.update_product(input)
+        Product.update_product(
+            {
+            'name' : request.values.get('name'),
+            'price' : request.values.get('price'),
+            'category' : request.values.get('category'), 
+            'description' : request.values.get('description'),
+            'pid' : request.values.get('pid')
+            }
+        )
         
         return redirect(url_for('manager.productManager'))
 
@@ -163,15 +124,13 @@ def show_info():
     price = data[2]
     category = data[3]
     description = data[4]
-    image = data[5]
 
     product = {
         '商品編號': pid,
         '商品名稱': pname,
         '單價': price,
         '類別': category,
-        '商品敘述': description,
-        '商品圖片': image
+        '商品敘述': description
     }
     return product
 
