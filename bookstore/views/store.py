@@ -71,6 +71,10 @@ def bookstore():
         price = data[2]
         category = data[3]
         description = data[4]
+        # customize
+        # usage = data[5]
+        # wholesaler = data[6]
+        # customize end
         image = 'sdg.jpg'
         
         product = {
@@ -79,6 +83,10 @@ def bookstore():
             '單價': price,
             '類別': category,
             '商品敘述': description,
+            # customize
+            # '商品用途': usage,
+            # '供應商': wholesaler,
+            # customize end
             '商品圖片': image
         }
 
@@ -171,6 +179,7 @@ def cart():
             
             if( data == None): #假如購物車裡面沒有他的資料
                 time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                # time = datetime.now().strftime('%d-%m-%y')
                 Cart.add_cart(current_user.id, time) # 幫他加一台購物車
                 data = Cart.get_cart(current_user.id) 
                 

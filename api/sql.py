@@ -66,7 +66,7 @@ class Cart():
 
     def add_cart(user_id, time):
         sql = 'INSERT INTO CART VALUES (:id, :time, cart_tno_seq.nextval)'
-        DB.execute_input( DB.prepare(sql), {'id': user_id, 'time':time})
+        DB.execute_input( DB.prepare(sql), {'id': user_id, 'time': time})
         DB.commit()
 
     def clear_cart(user_id):
