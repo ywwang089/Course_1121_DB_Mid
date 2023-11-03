@@ -92,7 +92,10 @@ class Product():
         return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':pid}))[0]
 
     def add_product(input):
-        sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description)'
+        # sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description)'
+        # customize
+        sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description, :usage, :wholesaler)'
+        # customize end
 
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
@@ -103,7 +106,7 @@ class Product():
         DB.commit()
 
     def update_product(input):
-        sql = 'UPDATE PRODUCT SET PNAME=:name, PRICE=:price, CATEGORY=:category, PDESC=:description WHERE PID=:pid'
+        sql = 'UPDATE PRODUCT SET PNAME=:name, PRICE=:price, PET_CATEGORY=:category, PDESC=:description WHERE PID=:pid'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     

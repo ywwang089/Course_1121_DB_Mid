@@ -73,6 +73,10 @@ def add():
         price = request.values.get('price')
         category = request.values.get('category')
         description = request.values.get('description')
+        # customize
+        usage = 'test'
+        wholesaler = 'test'
+        # customize end
             
         if (len(name) < 1 or len(price) < 1):
             return redirect(url_for('manager.productManager'))
@@ -82,7 +86,11 @@ def add():
              'name' : name,
              'price' : price,
              'category' : category,
-             'description':description
+             'description':description,
+             # customize
+             'usage': usage, 
+             'wholesaler': wholesaler,
+             # customize end
             }
         )
 

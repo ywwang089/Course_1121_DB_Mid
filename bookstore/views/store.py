@@ -178,8 +178,8 @@ def cart():
             data = Cart.get_cart(current_user.id)
             
             if( data == None): #假如購物車裡面沒有他的資料
-                time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                # time = datetime.now().strftime('%d-%m-%y')
+                # time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                time = datetime.now().strftime('%Y-%m月-%d')
                 Cart.add_cart(current_user.id, time) # 幫他加一台購物車
                 data = Cart.get_cart(current_user.id) 
                 
