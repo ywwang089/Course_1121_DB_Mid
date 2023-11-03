@@ -1,3 +1,12 @@
+# TodoList
+1. 使用者加入購物車 (date 不能有中文)
+2. 編輯商品 (done)
+3. 新增商品 (done) (前端要記得加上新增商品的欄位，可以看顯示商品詳細資訊時要不要 show 出額外資訊)
+4. 訂單管理 (date 不能有中文)
+5. 資料分析(修不好就刪掉)
+6. 歷史紀錄(要刪除，不需要這項)
+7. 資料庫要再確認一下是不是有地方沒建好 (例如：外部鍵參考的 id、多餘的資料綱目...)
+
 # Git Tutorials
 我覺得這份寫的蠻清楚的: [Git Tutorials](https://github.com/twtrubiks/Git-Tutorials)
 
