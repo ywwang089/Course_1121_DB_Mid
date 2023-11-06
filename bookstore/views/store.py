@@ -11,7 +11,7 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Product, Record, Cart
+from api.sql import Member, Order_, Product, Record, Cart
 
 store = Blueprint('bookstore', __name__, template_folder='../templates')
 
@@ -179,8 +179,14 @@ def cart():
             
             if( data == None): #假如購物車裡面沒有他的資料
                 # time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                time = datetime.now().strftime('%Y-%m月-%d')
-                Cart.add_cart(current_user.id, time) # 幫他加一台購物車
+                # customize
+                # time = datetime.now().strftime('%d-%m-%y')
+                time = str(datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+                format = 'yyyy/mm/dd hh24:mi:ss'
+                # format = 'dd-mm月 -YY'
+                Cart.add_cart( {'id': current_user.id, 'time':time, 'format':format} )
+                # customize end
+                # Cart.add_cart(current_user.id, time) # 幫他加一台購物車
                 data = Cart.get_cart(current_user.id) 
                 
             tno = data[2] # 取得交易編號
@@ -192,7 +198,8 @@ def cart():
 
             # 如果購物車裡面沒有的話 把他加一個進去
             if(product == None):
-                Record.add_product( {'id': tno, 'tno':pid, 'price':price, 'total':price} )
+                # Record.add_product( {'id': tno, 'tno':pid, 'price':price, 'total':price} )
+                Record.add_product( {'tno': tno, 'pid':pid, 'price':price} )
             else:
                 # 假如購物車裡面有的話，就多加一個進去
                 amount = Record.get_amount(tno, pid)
@@ -221,7 +228,8 @@ def cart():
 
             time = str(datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             format = 'yyyy/mm/dd hh24:mi:ss'
-            Order_List.add_order( {'mid': current_user.id, 'time':time, 'total':total, 'format':format, 'tno':tno} )
+            # Order_.add_order( {'mid': current_user.id, 'time':time, 'total':total, 'format':format, 'tno':tno} )
+            Order_.add_order( {'mid': current_user.id, 'time':time, 'format':format, 'tno': tno} )
 
             return render_template('complete.html', user=current_user.name)
 
