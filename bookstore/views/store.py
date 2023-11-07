@@ -275,12 +275,13 @@ def orderlist():
     for i in data:
         temp = {
             '訂單編號': i[0],
-            '訂單總價': i[3],
+            # '訂單總價': i[3],
             '訂單時間': i[2]
         }
         orderlist.append(temp)
+        print(orderlist)
     
-    orderdetail_row = Order_List.get_orderdetail()
+    orderdetail_row = Order_.get_orderdetail()
     orderdetail = []
 
     for j in orderdetail_row:

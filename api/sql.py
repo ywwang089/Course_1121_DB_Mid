@@ -38,7 +38,7 @@ class Member():
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
     def create_member(input):
-        sql = 'INSERT INTO MEMBER VALUES (null, :name, :account, :password, :identity)'
+        sql = 'INSERT INTO MEMBER VALUES (null, :name, :account, :password, :identity, null, 1, null)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
@@ -48,7 +48,7 @@ class Member():
         DB.commit()
         
     def get_order(userid):
-        sql = 'SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY ORDERTIME DESC'
+        sql = 'SELECT * FROM ORDER_ WHERE MID = :id ORDER BY CARTTIME DESC'
         return DB.fetchall(DB.execute_input( DB.prepare(sql), {'id':userid}))
     
     def get_role(userid):
@@ -167,11 +167,11 @@ class Order_():
         DB.commit()
 
     def get_order():
-        sql = 'SELECT OID, NAME, PRICE, ORDERTIME FROM ORDER_ NATURAL JOIN MEMBER ORDER BY ORDERTIME DESC'
+        sql = 'SELECT MID, NAME, CARTTIME FROM ORDER_ NATURAL JOIN MEMBER ORDER BY CARTTIME DESC'
         return DB.fetchall(DB.execute(DB.connect(), sql))
     
     def get_orderdetail():
-        sql = 'SELECT O.OID, P.PNAME, R.SALEPRICE, R.AMOUNT FROM ORDER_ O, RECORD R, PRODUCT P WHERE O.TNO = R.TNO AND R.PID = P.PID'
+        sql = 'SELECT O.MID, P.PNAME, R.SALEPRICE, R.AMOUNT FROM ORDER_ O, RECORD R, PRODUCT P WHERE O.PID = R.TNO AND R.PID = P.PID'
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
 

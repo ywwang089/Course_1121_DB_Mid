@@ -78,6 +78,7 @@ def register():
                 'password':request.form['password'], 
                 'identity':request.form['identity'] 
             }
+            print(input)
             Member.create_member(input)
             return redirect(url_for('api.login'))
 
