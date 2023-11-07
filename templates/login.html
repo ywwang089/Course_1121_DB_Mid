@@ -23,9 +23,8 @@
                     <img src="{{ url_for('static', filename='./img/zhizhi.png') }}" class='img-fluid' alt="">
                 </div>
                 <div class="col-12 col-md-5 col-lg-4 order-md-1 mb-auto mb-md-0 pb-8 py-md-11">
-                    <img src="{{ url_for('static', filename='./img/logo_black.png') }}" class='logo' alt="">
-                    <h1 class="text-cn">Welcome back</h1>
-                    <p class="text-cn">Enter your account details below.</p>
+                    <img src="{{ url_for('static', filename='./img/title.png') }}" class='logo' alt="">
+                    
 
                     <form action="{{ url_for('api.login') }}" method="post" name="myForm">
                         <div class="form-group">
