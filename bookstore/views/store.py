@@ -11,7 +11,7 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_, Product, Record, Cart
+from api.sql import Member, Order_, Product, Record, Cart, Pet_Wiki
 
 store = Blueprint('bookstore', __name__, template_folder='../templates')
 
@@ -70,23 +70,23 @@ def bookstore():
         
         pname = data[1]
         price = data[2]
-        category = data[3]
-        description = data[4]
+        pet_category = data[3]
+        pdesc = data[4]
         # customize
-        # usage = data[5]
-        # wholesaler = data[6]
-        # customize end
+        usage = data[5]
+        wholesaler = data[6]
         image = data[7]
+        # customize end
         
         product = {
             '商品編號': pid,
             '商品名稱': pname,
             '單價': price,
-            '類別': category,
-            '商品敘述': description,
+            '類別': pet_category,
+            '商品敘述': pdesc,
             # customize
-            # '商品用途': usage,
-            # '供應商': wholesaler,
+            '商品用途': usage,
+            '供應商': wholesaler,
             # customize end
             '商品圖片': image
         }
@@ -163,6 +163,133 @@ def bookstore():
                 book_data.append(book)
         
         return render_template('bookstore.html', book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)
+
+# 寵物百科
+@store.route('/pet_wiki', methods=['GET', 'POST'])
+@login_required
+def pet_wiki():
+    result = Pet_Wiki.count()
+    count = math.ceil(result[0]/9)
+    flag = 0
+    
+    if request.method == 'GET':
+        if(current_user.role == 'manager'):
+            flash('No permission')
+            return redirect(url_for('manager.home'))
+
+    if 'keyword' in request.args and 'page' in request.args:
+        total = 0
+        single = 1
+        page = int(request.args['page'])
+        start = (page - 1) * 9
+        end = page * 9
+        search = request.values.get('keyword')
+        keyword = search
+        
+        cursor.prepare('SELECT * FROM PET_WIKI WHERE PETID LIKE :search')
+        cursor.execute(None, {'search': '%' + keyword + '%'})
+        book_row = cursor.fetchall()
+        book_data = []
+        final_data = []
+        
+        for i in book_row:
+            book = {
+                '寵物編號': i[0],
+                '內容': i[1]
+            }
+            book_data.append(book)
+            total = total + 1
+        
+        if(len(book_data) < end):
+            end = len(book_data)
+            flag = 1
+            
+        for j in range(start, end):
+            final_data.append(book_data[j])
+            
+        count = math.ceil(total/9)
+        
+        return render_template('pet_wiki.html', single=single, keyword=search, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)    
+
+    
+    elif 'petid' in request.args:
+        petid = request.args['petid']
+        data = Pet_Wiki.get_pet_wiki(petid)
+        
+        petid = data[0]
+        content = data[1]
+
+        pet_wiki = {
+            '寵物編號': petid,
+            '內容': content
+        }
+
+        return render_template('pet_wiki.html', data = pet_wiki, user=current_user.name)
+    
+    elif 'page' in request.args:
+        page = int(request.args['page'])
+        start = (page - 1) * 9
+        end = page * 9
+        
+        book_row = Pet_Wiki.get_all_pet_wiki()
+        book_data = []
+        final_data = []
+        
+        for i in book_row:
+            book = {
+                '寵物編號': i[0],
+                '內容': i[1]
+            }
+            book_data.append(book)
+            
+        if(len(book_data) < end):
+            end = len(book_data)
+            flag = 1
+            
+        for j in range(start, end):
+            final_data.append(book_data[j])
+        
+        return render_template('pet_wiki.html', book_data=final_data, user=current_user.name, page=page, flag=flag, count=count)    
+    
+    elif 'keyword' in request.args:
+        single = 1
+        search = request.values.get('keyword')
+        keyword = search
+        cursor.prepare('SELECT * FROM PET_WIKI WHERE PETID LIKE :search')
+        cursor.execute(None, {'search': '%' + keyword + '%'})
+        book_row = cursor.fetchall()
+        book_data = []
+        total = 0
+        
+        for i in book_row:
+            book = {
+                '寵物編號': i[0],
+                '內容': i[1]
+            }
+
+            book_data.append(book)
+            total = total + 1
+            
+        if(len(book_data) < 9):
+            flag = 1
+        
+        count = math.ceil(total/9)    
+        
+        return render_template('pet_wiki.html', keyword=search, single=single, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)    
+    
+    else:
+        book_row = Pet_Wiki.get_all_pet_wiki()
+        book_data = []
+        temp = 0
+        for i in book_row:
+            book = {
+                '寵物編號': i[0],
+                '內容': i[1]
+            }
+            if len(book_data) < 9:
+                book_data.append(book)
+        
+        return render_template('pet_wiki.html', book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)
 
 # 會員購物車
 @store.route('/cart', methods=['GET', 'POST'])

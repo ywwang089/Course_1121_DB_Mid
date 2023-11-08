@@ -117,6 +117,38 @@ class Product():
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
+class Pet_Wiki():
+    def count():
+        sql = 'SELECT COUNT(*) FROM PET_WIKI'
+        return DB.fetchone(DB.execute( DB.connect(), sql))
+    
+    def get_pet_wiki(petid):
+        sql ='SELECT * FROM PET_WIKI WHERE PETID = :petid'
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {'petid': petid}))
+
+    def get_all_pet_wiki():
+        sql = 'SELECT * FROM PET_WIKI'
+        return DB.fetchall(DB.execute( DB.connect(), sql))
+    
+    def get_name(petid):
+        sql = 'SELECT PNAME FROM PET_WIKI WHERE PETID = :petid'
+        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'petid':petid}))[0]
+
+    def add_pet_wiki(input):
+        sql = 'INSERT INTO PET_WIKI VALUES (:petid, :content)'
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+    
+    def delete_pet_wiki(petid):
+        sql = 'DELETE FROM PET_WIKI WHERE PID = :petid '
+        DB.execute_input(DB.prepare(sql), {'petid': petid})
+        DB.commit()
+
+    def update_pet_wiki(input):
+        sql = 'UPDATE PET_WIKI SET PETID=:petid, CONTENT=:content WHERE PETID=:petid'
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
 class Record():
     def get_total_money(tno):
         # sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO=:tno'
