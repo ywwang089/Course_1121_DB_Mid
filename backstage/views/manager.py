@@ -73,6 +73,10 @@ def add():
         price = request.values.get('price')
         category = request.values.get('category')
         description = request.values.get('description')
+        # customize
+        usage = 'test'
+        wholesaler = 'test'
+        # customize end
             
         if (len(name) < 1 or len(price) < 1):
             return redirect(url_for('manager.productManager'))
@@ -82,7 +86,11 @@ def add():
              'name' : name,
              'price' : price,
              'category' : category,
-             'description':description
+             'description':description,
+             # customize
+             'usage': usage, 
+             'wholesaler': wholesaler,
+             # customize end
             }
         )
 
@@ -141,18 +149,18 @@ def orderManager():
     if request.method == 'POST':
         pass
     else:
-        order_row = Order_List.get_order()
+        order_row = Order_.get_order()
         order_data = []
         for i in order_row:
             order = {
                 '訂單編號': i[0],
                 '訂購人': i[1],
-                '訂單總價': i[2],
-                '訂單時間': i[3]
+                # '訂單總價': i[2],
+                '訂單時間': i[2]
             }
             order_data.append(order)
             
-        orderdetail_row = Order_List.get_orderdetail()
+        orderdetail_row = Order_.get_orderdetail()
         order_detail = []
 
         for j in orderdetail_row:

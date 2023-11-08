@@ -77,7 +77,7 @@
         <tr>
             <!-- <th width="10%">商品編號</th> -->
             <th width="15%"><center>訂購人</center></th>
-            <th width="15%"><center>訂單總價</center></th>
+         
             <th width="25%"><center>訂單時間</center></th>
             <th><center>訂單操作</center></th>
         </tr>
@@ -86,7 +86,7 @@
     {% for i in orderData %}
         <tr>
             <td><center>{{ i.訂購人 }}</center></td>
-            <td><center>{{ i.訂單總價 }}</center></td>
+           
             <td><center>{{ i.訂單時間 }}</center></td>
             <td><center>
                 <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.訂單編號}}">

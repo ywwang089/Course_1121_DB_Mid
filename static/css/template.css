@@ -18,11 +18,11 @@ body {
     margin-bottom: 20px;
     opacity: 0.7;
 }
-.index_title{
+.index_pic2{
+    height: 120px;
     text-align: center;
-    font-size: 40px;
     margin-bottom:20px;
-    margin-top: 20px;
+    
 }
 .book_title{
     text-align: center;
@@ -34,14 +34,28 @@ body {
     font-size: 30px;
     margin-bottom:0px;
     margin-top: 0px;
+    color: #805300;
+    font-weight:bold;
 }
 .index_btn{
     width: 100px;
     height: 50px;
     font-size: 25px;
     margin: 10px;
-    background-color: #a29074;
+    background-color: #0F39A2;
     color: white;
+    font-weight: bolder;
+    border-radius: 10px;
+    border: 0px;
+    cursor: pointer;
+}
+.index_btn1{
+    width: 100px;
+    height: 50px;
+    font-size: 25px;
+    margin: 10px;
+    background-color: #E5EA43;
+    color: #000000;
     font-weight: bolder;
     border-radius: 10px;
     border: 0px;
@@ -57,7 +71,8 @@ body {
     justify-content: center;
 }
 .option_div{
-    margin: 0px 10px 0px 0px;
+    margin: 1px 10px 0px 0px;
+    font-weight:bold;
 }
 .form_div{
     text-align: center;
@@ -69,20 +84,32 @@ input{
     border: 0px;
 }
 .register_btn{
-    width: 70px;
-    height: 30px;
-    font-size: 14px;
-    background-color: #a29074;
+    width: 40%;
+    height: 40px;
+    font-size: 16px;
+    background-color: #0F39A2;;
     color:white;
     border-radius: 10px;
     border: 0px;
     cursor: pointer;
 }
+
+.register_btn1{
+    font-size: 16px;
+    background-color: #E5EA43;
+    color:black;
+    border-radius: 10px;
+    border: 0px;
+    cursor: pointer;
+    display: inline-block;
+    width: 40%;
+    height: 40px;
+}
 .register_btn:hover{
     opacity: 0.8;
 }
 .icon{
-    height: 100px;
+    height: 200px;
     margin:auto;
     display:block;
     opacity: 0.7;
@@ -178,10 +205,10 @@ button{
     left: 90vw;
 }
 .outer_div{
-    background-color: #d5d1ca;
+    
     padding: 70px 50px;
     border-radius: 10px;
-    border: 5px solid #d4c6b1;
+    
 }
 input{
     background-color: #ebebeb;

@@ -11,7 +11,7 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Product, Record, Cart
+from api.sql import Member, Order_, Product, Record, Cart
 
 store = Blueprint('bookstore', __name__, template_folder='../templates')
 
@@ -46,7 +46,8 @@ def bookstore():
             book = {
                 '商品編號': i[0],
                 '商品名稱': i[1],
-                '商品價格': i[2]
+                '商品價格': i[2],
+                
             }
             book_data.append(book)
             total = total + 1
@@ -71,7 +72,11 @@ def bookstore():
         price = data[2]
         category = data[3]
         description = data[4]
-        image = 'sdg.jpg'
+        # customize
+        # usage = data[5]
+        # wholesaler = data[6]
+        # customize end
+        image = data[7]
         
         product = {
             '商品編號': pid,
@@ -79,6 +84,10 @@ def bookstore():
             '單價': price,
             '類別': category,
             '商品敘述': description,
+            # customize
+            # '商品用途': usage,
+            # '供應商': wholesaler,
+            # customize end
             '商品圖片': image
         }
 
@@ -97,7 +106,8 @@ def bookstore():
             book = {
                 '商品編號': i[0],
                 '商品名稱': i[1],
-                '商品價格': i[2]
+                '商品價格': i[2],
+                '商品圖片': i[7]
             }
             book_data.append(book)
             
@@ -124,7 +134,8 @@ def bookstore():
             book = {
                 '商品編號': i[0],
                 '商品名稱': i[1],
-                '商品價格': i[2]
+                '商品價格': i[2],
+                '商品圖片': i[7]
             }
 
             book_data.append(book)
@@ -146,6 +157,7 @@ def bookstore():
                 '商品編號': i[0],
                 '商品名稱': i[1],
                 '商品價格': i[2],
+                '商品圖片': i[7]
             }
             if len(book_data) < 9:
                 book_data.append(book)
@@ -170,8 +182,15 @@ def cart():
             data = Cart.get_cart(current_user.id)
             
             if( data == None): #假如購物車裡面沒有他的資料
-                time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                Cart.add_cart(current_user.id, time) # 幫他加一台購物車
+                # time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                # customize
+                # time = datetime.now().strftime('%d-%m-%y')
+                time = str(datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+                format = 'yyyy/mm/dd hh24:mi:ss'
+                # format = 'dd-mm月 -YY'
+                Cart.add_cart( {'id': current_user.id, 'time':time, 'format':format} )
+                # customize end
+                # Cart.add_cart(current_user.id, time) # 幫他加一台購物車
                 data = Cart.get_cart(current_user.id) 
                 
             tno = data[2] # 取得交易編號
@@ -183,7 +202,8 @@ def cart():
 
             # 如果購物車裡面沒有的話 把他加一個進去
             if(product == None):
-                Record.add_product( {'id': tno, 'tno':pid, 'price':price, 'total':price} )
+                # Record.add_product( {'id': tno, 'tno':pid, 'price':price, 'total':price} )
+                Record.add_product( {'tno': tno, 'pid':pid, 'price':price} )
             else:
                 # 假如購物車裡面有的話，就多加一個進去
                 amount = Record.get_amount(tno, pid)
@@ -212,7 +232,8 @@ def cart():
 
             time = str(datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             format = 'yyyy/mm/dd hh24:mi:ss'
-            Order_List.add_order( {'mid': current_user.id, 'time':time, 'total':total, 'format':format, 'tno':tno} )
+            # Order_.add_order( {'mid': current_user.id, 'time':time, 'total':total, 'format':format, 'tno':tno} )
+            Order_.add_order( {'mid': current_user.id, 'time':time, 'format':format, 'tno': tno} )
 
             return render_template('complete.html', user=current_user.name)
 
@@ -258,12 +279,13 @@ def orderlist():
     for i in data:
         temp = {
             '訂單編號': i[0],
-            '訂單總價': i[3],
+            # '訂單總價': i[3],
             '訂單時間': i[2]
         }
         orderlist.append(temp)
+        print(orderlist)
     
-    orderdetail_row = Order_List.get_orderdetail()
+    orderdetail_row = Order_.get_orderdetail()
     orderdetail = []
 
     for j in orderdetail_row:

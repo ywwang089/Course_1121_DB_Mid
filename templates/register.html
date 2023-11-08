@@ -1,23 +1,38 @@
 {% extends "base.html" %}
 {% block head %}
 {{ super() }}
+
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="../static/css/zhizhi_style.css">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/e3962a2758.js" crossorigin="anonymous"></script>
+<script defer src="../static/font/fontawesome-free-5.13.0-web/js/all.js"></script>
+<link rel="icon" href="../static/img/1.ico" type="image/x-icon">
+
 {% endblock head %}
 
 {% block title %}Register Page{% endblock title%}
 
 {% block content%}
 <div class="position-absolute top-50 start-50 translate-middle outer_div">
-    <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}"></a>
+    <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/zhizhi.png') }}"></a>
     <h1 class="register_title mb-3 mt-3">會員註冊</h1>
 
     <div class="form_div">
         <form  method='post' action={{ url_for('api.register') }} >
             <p class="mb-3">
-                姓名：<input type="text" name="username" required/>
+                <div class="form-group">
+                <input type="text"  class='form-control input-bar' name="username" placeholder="姓名" required/>
+                </div>
             </p>
     
             <p class="mb-3">
-                帳號：<input type="text" name="account" required/>
+                <div class="form-group">
+                <input type="text" class='form-control input-bar' placeholder="帳號" name="account" required/></div>
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
                 <p class="same_accoount">
@@ -26,10 +41,22 @@
                 {% endif %}
                 {% endwith %}
             </p>
-    
             <p class="mb-4">
-                密碼：<input type="password" name="password" required/>
+                 <div class="form-group">
+                <input type="password" class='form-control input-bar' placeholder="密碼" name="password" required/></div>
             </p>
+
+            <p class="mb-3">
+                <div class="form-group">
+                <input type="text"  class='form-control input-bar'  placeholder="電話" />
+                </div>
+            </p>
+            <p class="mb-3">
+                <div class="form-group">
+                <input type="text"  class='form-control input-bar'  placeholder="生日" />
+                </div>
+            </p>
+
             <div class="btn_div mb-4" style="margin-bottom: 1rem;">
                 <p class="option_div">選擇你要註冊的身份：</p>
                 <select name="identity">
@@ -42,7 +69,7 @@
                 <a href="{{ url_for('index') }}">
                     <button type="button" class="register_btn">回上頁</button>
                 </a>
-                <button type="submit" class="register_btn"> 註冊</button>
+                <button type="submit" class="register_btn1"> 註冊</button>
             </p>
         </form>
     </div>

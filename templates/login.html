@@ -10,6 +10,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/e3962a2758.js" crossorigin="anonymous"></script>
 <script defer src="../static/font/fontawesome-free-5.13.0-web/js/all.js"></script>
+<link rel="icon" href="../static/img/1.ico" type="image/x-icon">
 {% endblock head %}
 
 {% block title %}Login Page{% endblock title%}
@@ -23,9 +24,8 @@
                     <img src="{{ url_for('static', filename='./img/zhizhi.png') }}" class='img-fluid' alt="">
                 </div>
                 <div class="col-12 col-md-5 col-lg-4 order-md-1 mb-auto mb-md-0 pb-8 py-md-11">
-                    <img src="{{ url_for('static', filename='./img/logo_black.png') }}" class='logo' alt="">
-                    <h1 class="text-cn">Welcome back</h1>
-                    <p class="text-cn">Enter your account details below.</p>
+                    <img src="{{ url_for('static', filename='./img/title.png') }}" class='logo' alt="">
+                    
 
                     <form action="{{ url_for('api.login') }}" method="post" name="myForm">
                         <div class="form-group">
