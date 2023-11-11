@@ -1,77 +1,30 @@
-# TodoList
-1. 使用者加入購物車 (done)
-2. 編輯商品 (done)
-3. 新增商品 (done) (前端要記得加上新增商品的欄位，可以看顯示商品詳細資訊時要不要 show 出額外資訊)
-4. 訂單管理 (date 不能有中文)
-5. 資料分析(修不好就刪掉)
-6. 歷史紀錄(要刪除，不需要這項)
-7. 資料庫要再確認一下是不是有地方沒建好 (例如：外部鍵參考的 id、多餘的資料綱目...)
+# 吱吱寵物用品專賣店
+資料庫系統 專案一  
+組員：莊家綺 M124020001、謝旻臻 M124020003、王郁文 M124020008、張瓊之 M114020004
+### 一、資料和功能分析
+我們要替一家「吱吱寵物用品專賣店」進行資料塑模。此商店採會員制，所有下單的顧客都必須是會員。系統分成前台與管理員後台。前台會員登入後，會員可以看到商品頁面、商品詳細資料、交易紀錄、購物車商品、寵物百科。後台管理員可以登入，並且對商品新增、修改、刪除。  
 
-# Git Tutorials
-我覺得這份寫的蠻清楚的: [Git Tutorials](https://github.com/twtrubiks/Git-Tutorials)
+包含五種資料：  
+- 會員：由會員編號、會員名稱、生日、帳號、密碼、地址、會員級別、電話組成。會員編號為唯一。
+- 交易：包含交易編號、交易方式、交易時間。交易編號為唯一。一個會員可以有多筆交易。
+- 購物車：包含購物車時間，沒有任何一個屬性是唯一，但是每個會員產生的購物車時間都不相同，一個會員可能有多個購物車。
+- 商品：由商品編號、商品名稱、定價、商品敘述、廠商、商品圖片、商品種類組成。其中，商品種類是複合屬性，分別由寵物類型和用途組合而成。商品編號為唯一。
+- 寵物百科：由寵物編號以及內容組成。其中，寵物編號是唯一。
 
-# 中山網路書店
-[![GitHub release](https://img.shields.io/github/release/Text-Analytics-and-Retrieval/db_class2023)](https://github.com/Text-Analytics-and-Retrieval/db_class2023/releases/latest)
-[![GitHub license](https://img.shields.io/github/license/Text-Analytics-and-Retrieval/db_class2023)](https://github.com/Text-Analytics-and-Retrieval/db_class2023/main/LICENSE)
+### 二、ERD
+本系統之ERD如下：  
+![image](https://github.com/ywwang089/Course_1121_DB_Mid/assets/149531890/baa09c94-d5ac-466f-87b9-e8f2d8602828)  
 
-一套使用Flask開發的網路書店系統，後端使用Oracle資料庫
-<br>
+### 三、關聯綱目
+本系統之關聯綱目如下：  
+![image](https://github.com/ywwang089/Course_1121_DB_Mid/assets/149531890/9976356f-902c-4e0b-85a6-84f9d8be3e17)  
 
-## 功能
-- 提供CRUD範例，並搭配資料分析功能。
-- 以MVC架構開發。
-- 一般消費者可以瀏覽、搜尋、購買商品，並查看訂單狀態。
-- 後台管理者可以編輯商品，並檢視每筆訂單以及商品銷售圖表。
+### 四、系統架構圖與所用工具
+1.本系統架構圖如下：  
+![image](https://github.com/ywwang089/Course_1121_DB_Mid/assets/149531890/618052d1-8b42-459f-8778-6b0f8a82013b)  
 
-## 範例
-點選以下連結體驗系統功能: https://bookstore.tarflow.com/
-![image](https://user-images.githubusercontent.com/52253495/226426951-b1ef62d0-56ae-443f-9483-c06524b5fb12.png)
+2.使用工具：  
+　　本專案系統使用 Python+Flask 製作前後端。Flask 是一個使用 Python 編寫的輕量級 Web 應用框架，可以在網頁間傳值與進行網頁切換，並使用 flash message 做前後端訊息溝通。資料庫的部分則是使用 Oracle DB， Oracle DB 為圖形化資料庫管理介面，建立資料與管理都較為容易。  
 
-
-## 安裝
-### 1. 取得原始碼
-```bash
-git clone https://github.com/Text-Analytics-and-Retrieval/db_class2023.git
-cd db_class2023/
-```
-### 2. 建立環境
-```bash!	
-# <name> 請改為自訂的環境名稱，同學也可以自訂python 的版本，但要注意3.11版會有版本衝突的問題，不建議使用
-conda create -n <name> python=3.10
-```
-
-### 3. 安裝環境
-##### 安裝python套件
-```bash
-# <workspace> 請改為環境路徑
-cd <workspace>
-pip install -r requirements.txt
-```
-
-
-##### 修改程式碼
-
-```python=
-# 將link.py中的連線資訊（account、password）改為自己組別的帳密
-connection = oracledb.connect(user='account', password='password', host='140.117.69.60', port=1521, service_name='ORCLPDB1') 
-```
-
-```python=
-# 使Flask監聽所有介面
-app.run(host='0.0.0.0')
-```
-
-### 4. 匯入SQL
-- 打開 ebook.sql
-- 將 SQL 檔裡面的 `GROUP19` 全部替換成 同學們自己的組別 ex: 第一組替換為 `GROUP1`
-- 接著複製到 Oracle 上做執行，就可以得到一樣的資料了
-
-### 5. 啟動程式
-```python=
-python app.py
-```
-
-## 使用
-- 輸入http://localhost:15000/進入首頁。
-- 首次使用請點選註冊按鈕，並註冊帳號。
-- 註冊後，點選登入即可進入頁面。
+### 五、程式 DEMO
+[DEMO影片連結(YouTube)](https://www.youtube.com/watch?v=hamQTCZ3FU0)  
