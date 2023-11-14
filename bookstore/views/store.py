@@ -87,8 +87,8 @@ def bookstore():
             # customize
             '商品用途': usage,
             '供應商': wholesaler,
+            '商品圖片': image,
             # customize end
-            '商品圖片': image
         }
 
         return render_template('product.html', data = product, user=current_user.name)
@@ -335,7 +335,8 @@ def cart():
                 # 假如購物車裡面有的話，就多加一個進去
                 amount = Record.get_amount(tno, pid)
                 total = (amount+1)*int(price)
-                Record.update_product({'amount':amount+1, 'tno':tno , 'pid':pid, 'total':total})
+                # Record.update_product({'amount':amount+1, 'tno':tno , 'pid':pid, 'total':total})
+                Record.update_product({'amount':amount+1, 'tno':tno , 'pid':pid, 'price':price})
 
         elif "delete" in request.form :
             pid = request.values.get('delete')
@@ -440,7 +441,8 @@ def change_order():
                 'amount':request.form[i[1]],
                 'pid':i[1],
                 'tno':tno,
-                'total':int(request.form[i[1]])*int(i[3])
+                # 'total':int(request.form[i[1]])*int(i[3])
+                'price': int(i[3])
             })
             print('change')
 

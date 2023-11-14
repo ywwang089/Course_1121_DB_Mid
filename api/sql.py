@@ -152,7 +152,7 @@ class Pet_Wiki():
 class Record():
     def get_total_money(tno):
         # sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO=:tno'
-        sql = 'SELECT SUM(SALEPRICE) FROM RECORD WHERE TNO=:tno'
+        sql = 'SELECT SUM(SALEPRICE * AMOUNT) FROM RECORD WHERE TNO=:tno'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'tno': tno}))[0]
 
     def check_product(pid, tno):
@@ -178,7 +178,8 @@ class Record():
         return DB.fetchone( DB.execute_input( DB.prepare(sql) , {'id': tno, 'pid':pid}) )[0]
     
     def update_product(input):
-        sql = 'UPDATE RECORD SET AMOUNT=:amount, TOTAL=:total WHERE PID=:pid and TNO=:tno'
+        # sql = 'UPDATE RECORD SET AMOUNT=:amount, TOTAL=:total WHERE PID=:pid and TNO=:tno'
+        sql = 'UPDATE RECORD SET AMOUNT=:amount, SALEPRICE=:price WHERE PID=:pid and TNO=:tno'
         DB.execute_input(DB.prepare(sql), input)
 
     def delete_check(pid):
@@ -187,7 +188,7 @@ class Record():
 
     def get_total(tno):
         # sql = 'SELECT SUM(TOTAL) FROM RECORD WHERE TNO = :id'
-        sql = 'SELECT SUM(SALEPRICE) FROM RECORD WHERE TNO = :id'
+        sql = 'SELECT SUM(SALEPRICE * AMOUNT) FROM RECORD WHERE TNO = :id'
         return DB.fetchall(DB.execute_input( DB.prepare(sql), {'id':tno}))[0]
     
 
