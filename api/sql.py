@@ -101,7 +101,7 @@ class Product():
     def add_product(input):
         # sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description)'
         # customize
-        sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description, :usage, :wholesaler)'
+        sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description, :usage, :wholesaler, :image)'
         # customize end
 
         DB.execute_input(DB.prepare(sql), input)

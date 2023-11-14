@@ -76,6 +76,7 @@ def add():
         # customize
         usage = 'test'
         wholesaler = 'test'
+        image = 'test.jpg'
         # customize end
             
         if (len(name) < 1 or len(price) < 1):
@@ -90,6 +91,7 @@ def add():
              # customize
              'usage': usage, 
              'wholesaler': wholesaler,
+             'image': image,
              # customize end
             }
         )
